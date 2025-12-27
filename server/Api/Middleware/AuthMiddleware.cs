@@ -8,6 +8,13 @@ public class AuthMiddleware(RequestDelegate next)
 
     public async Task Invoke(HttpContext context)
     {
+        // Allow CORS preflight requests (OPTIONS)
+        if (context.Request.Method == HttpMethods.Options)
+        {
+            await _next(context);
+            return;
+        }
+
         // if the method is GET or the path is excepted -> move on
         if(context.Request.Method == HttpMethods.Get || exceptedPaths.Contains(context.Request.Path.Value))
         {
