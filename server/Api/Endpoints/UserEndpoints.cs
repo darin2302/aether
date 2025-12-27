@@ -8,12 +8,13 @@ public class UserEndpoints(WebApplication app) : EndpointMapper(app)
 {
     public void Map()
     {
+        // OPTIMIZED: Returns channels with member counts
         _app.MapGet("/users/{id:guid}/related/channels", 
         async
         (
-            [FromServices] ChannelMemberService cmService,
+            [FromServices] ChannelService channelService,
             [FromRoute] Guid id
-        ) => Results.Ok(new { channelList = await cmService.GetRelatedChannels(id) }));
+        ) => Results.Ok(new { channelList = await channelService.GetRelatedChannelsDetailed(id) }));
 
         // OPTIMIZED: Returns posts with all related data
         _app.MapGet("/users/{id:guid}/related/posts", 

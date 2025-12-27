@@ -5,38 +5,34 @@ import { useWindowSize } from '@uidotdev/usehooks'
 
 import UserDataContext from '../../../contexts/UserDataContext'
 import { useContext, useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 import { getRelatedChannels } from '../../../services/userService.js'
 import styles from './styles/HomeUserPage.module.css'
-import { getMemberCount } from "../../../services/channelService.js"
 
 const HomeUserPage = () => {
   const windowSize = useWindowSize()
-  const [visibleChannels,setVisibleChannels] = useState([])
-  const {userData} = useContext(UserDataContext);
+  const [visibleChannels, setVisibleChannels] = useState([])
+  const { userData } = useContext(UserDataContext);
+  const navigate = useNavigate();
+  
   const fetchChannels = async () => {
-    try{
-      const response  = await getRelatedChannels(userData);
-      const channelList = (await response.json()).channelList;
-      const result = [];
-      for (let i = 0; i < channelList.length; i++)
-      {
-          const memberCountResponse = await getMemberCount(channelList[i].id);
-          const memberCount = await memberCountResponse.json();
-          result.push({...channelList[i], memberCount})
-      }
-      setVisibleChannels(result);
+    try {
+      const response = await getRelatedChannels(userData);
+      const data = await response.json();
+      setVisibleChannels(data.channelList || []);
     }
-    catch{
+    catch {
       navigate("/error");
     }
   }
-  return(
+
+  return (
     <div className={styles['container']}>
-      <HomeFeed userChannels={visibleChannels}/>
-      {windowSize.width>800&&
+      <HomeFeed userChannels={visibleChannels} />
+      {windowSize.width > 800 &&
         <div className={styles['content']}>
-          <HomeSidebar fetchChannels={fetchChannels} visibleChannels={visibleChannels}/>
+          <HomeSidebar fetchChannels={fetchChannels} visibleChannels={visibleChannels} />
         </div>
       }
     </div>

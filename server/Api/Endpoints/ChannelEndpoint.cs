@@ -14,25 +14,29 @@ public class ChannelEndpoints(WebApplication app) : EndpointMapper(app)
     }
     private void MapCoreEndpoints()
     {
+        // OPTIMIZED: Returns channel with member count
         _app.MapGet("/channels/{name}",
         async
         ([FromRoute] string name,
         [FromServices] ChannelService channelService
         ) =>
         {
-            var channelData = await channelService.GetOneByCriteria("name", name);
+            var channelData = await channelService.GetOneByCriteriaDetailed("name", name);
             return Results.Ok(new { channelData });
         }).AllowAnonymous();
 
+        // OPTIMIZED: Returns channels with member counts
         _app.MapGet("/channels/popular", 
         async 
         (
             [FromServices] ChannelService channelService
         ) => 
         {
-            return await channelService.GetPopularChannels();
+            var channelList = await channelService.GetPopularChannelsDetailed();
+            return Results.Ok(new { channelList });
         }).AllowAnonymous();
 
+        // OPTIMIZED: Returns channels with member counts
         _app.MapGet("/channels/search", 
         async
         (
@@ -40,17 +44,19 @@ public class ChannelEndpoints(WebApplication app) : EndpointMapper(app)
             [FromQuery] string name
         ) => 
         {
-            return await channelService.SearchChannels(name);
+            var channelList = await channelService.SearchChannelsDetailed(name);
+            return Results.Ok(new { channelList });
         }).AllowAnonymous();
 
+        // OPTIMIZED: Returns channel with member count
         _app.MapGet("/channels/{id:guid}",
         async
         ([FromRoute] Guid id,
          [FromServices] ChannelService channelService
         ) =>
         {
-            var channelData = await channelService.GetOne(id);
-            return Results.Ok(new {channelData});
+            var channelData = await channelService.GetOneDetailed(id);
+            return Results.Ok(new { channelData });
         }).AllowAnonymous();
 
         _app.MapGet("/channels/{id:guid}/name",

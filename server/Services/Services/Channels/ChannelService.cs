@@ -153,6 +153,93 @@ public class ChannelService(IConfiguration config) : DbService(config)
        ");
     }
 
+    // ============================================
+    // OPTIMIZED METHODS - Return ChannelDetailDto with member count
+    // ============================================
+
+    private const string ChannelDetailQuery = @"
+        SELECT 
+            c.id, c.ownerid, c.name, c.description, c.ispopular, c.dateofcreation,
+            (SELECT COUNT(*) FROM channelmembers cm WHERE cm.channelid = c.id) as membercount
+        FROM channels c";
+
+    public async Task<ChannelDetailDto> GetOneDetailed(Guid id)
+    {
+        QueryResult<ChannelDetailDto> result = await ExecuteQueryCommandAsync(
+            $"{ChannelDetailQuery} WHERE c.id = '{id}'::uuid",
+            MapChannelDetailFromReader);
+
+        if (!result.HasRecord)
+            throw new NotFoundException("Channel not found.");
+
+        return result.Record;
+    }
+
+    public async Task<ChannelDetailDto> GetOneByCriteriaDetailed<T>(string columnName, T columnValue)
+    {
+        string command =
+            $@"{ChannelDetailQuery} WHERE c.{columnName} = @ColumnValue{ColumnTypeHelper.GetAnnotation<T>()}";
+
+        NpgsqlParameter[] parameters =
+        [
+            new NpgsqlParameter("@ColumnValue", columnValue)
+        ];
+        QueryResult<ChannelDetailDto> result = await ExecuteQueryCommandAsync(command, MapChannelDetailFromReader, parameters);
+
+        if (!result.HasRecord)
+            throw new NotFoundException("Channel not found.");
+
+        return result.Record;
+    }
+
+    public async Task<List<ChannelDetailDto>> GetPopularChannelsDetailed()
+    {
+        return await ExecuteQueryListCommandAsync(
+            $@"{ChannelDetailQuery}
+               WHERE c.ispopular = true
+               ORDER BY c.dateofcreation DESC",
+            MapChannelDetailFromReader);
+    }
+
+    public async Task<List<ChannelDetailDto>> GetRelatedChannelsDetailed(Guid userId)
+    {
+        return await ExecuteQueryListCommandAsync(
+            $@"{ChannelDetailQuery}
+               JOIN channelmembers cm ON c.id = cm.channelid
+               WHERE cm.userid = '{userId}'::uuid
+               ORDER BY c.dateofcreation DESC",
+            MapChannelDetailFromReader);
+    }
+
+    public async Task<List<ChannelDetailDto>> SearchChannelsDetailed(string name)
+    {
+        string command =
+            $@"{ChannelDetailQuery} WHERE c.name LIKE @Name";
+        NpgsqlParameter[] parameters =
+        [
+            new NpgsqlParameter("@Name", $"%{name}%")
+        ];
+        return await ExecuteQueryListCommandAsync(command, MapChannelDetailFromReader, parameters);
+    }
+
+    private ChannelDetailDto MapChannelDetailFromReader(NpgsqlDataReader reader)
+    {
+        return new ChannelDetailDto
+        {
+            Id = reader.GetGuid(0),
+            OwnerId = reader.GetGuid(1),
+            Name = reader.GetString(2),
+            Description = reader.IsDBNull(3) ? "" : reader.GetString(3),
+            IsPopular = reader.GetBoolean(4),
+            DateOfCreation = reader.GetDateTime(5),
+            MemberCount = reader.GetInt32(6)
+        };
+    }
+
+    // ============================================
+    // LEGACY METHODS - Keep for backwards compatibility
+    // ============================================
+
     public static Channel MapChannelFromReader(NpgsqlDataReader reader)
     {
         return new Channel()

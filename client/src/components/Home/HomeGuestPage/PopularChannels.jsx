@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react'
 
 import ChannelList from '../../Channel/ChannelList'
 import useLoading from '../../../hooks/useLoading'
-import { getMemberCount, getPopularChannels } from '../../../services/channelService'
+import { getPopularChannels } from '../../../services/channelService'
 import { useNavigate } from 'react-router-dom'
 
 const PopularChannels = () => {
-  const [visibleChannels,setVisibleChannels] = useState([])
-  const [Spinner, fetchWithLoading,isLoading] = useLoading(fetching)
+  const [visibleChannels, setVisibleChannels] = useState([])
+  const [Spinner, fetchWithLoading, isLoading] = useLoading(fetching)
   const navigate = useNavigate();
 
   async function fetching() {
@@ -17,24 +17,16 @@ const PopularChannels = () => {
     if (!response.ok)
       navigate("/error");
 
-    const channels = await response.json();
-    for(let i = 0; i < channels.length; i++)
-    {
-        const response = await getMemberCount(channels[i].id)
-        if(!response.ok)
-          navigate("/error");
-        const memberCount = await response.json();
-        channels[i] = {...channels[i], memberCount};
-    }
-    setVisibleChannels(channels);
+    const data = await response.json();
+    setVisibleChannels(data.channelList || []);
   }
+
   useEffect(() => {
     (async () => await fetchWithLoading())()
-  },[])
+  }, [])
 
   return (
-      isLoading 
-      ?
+    isLoading ?
       <Spinner size={40} />
       :
       visibleChannels.length > 0 &&
@@ -44,4 +36,4 @@ const PopularChannels = () => {
   )
 }
 
-export default PopularChannels 
+export default PopularChannels
