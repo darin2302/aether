@@ -9,14 +9,17 @@ IConfiguration config = new ConfigurationBuilder()
     .Build();
 
 // CORS configuration
+var allowedOrigins = config["AllowedOrigins"]?.Split(",") ?? [];
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins(
-                "https://aether-zeta.vercel.app",
-                "http://localhost:5173"
-            )
+        policy.SetIsOriginAllowed(origin =>
+            {
+                var uri = new Uri(origin);
+                return uri.Host == "localhost" ||
+                       allowedOrigins.Any(allowed => origin.Contains(allowed.Trim()));
+            })
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
