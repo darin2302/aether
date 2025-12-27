@@ -33,6 +33,22 @@ app.UseCors();
 app.UseMiddleware<ExceptionHandler>();
 app.UseMiddleware<AuthMiddleware>();
 
+// Health check endpoint
+app.MapGet("/health", async () =>
+{
+    try
+    {
+        var connString = config.GetConnectionString("aether");
+        using var conn = new Npgsql.NpgsqlConnection(connString);
+        await conn.OpenAsync();
+        return Results.Ok(new { status = "healthy", database = "connected" });
+    }
+    catch (Exception ex)
+    {
+        return Results.Ok(new { status = "unhealthy", database = "failed", error = ex.Message });
+    }
+}).AllowAnonymous();
+
 new AuthEndpoints(app).Map();
 new ChannelEndpoints(app).Map();
 new PostEndpoints(app).Map();
