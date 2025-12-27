@@ -1,7 +1,7 @@
 import InfiniteScrollPosts from '../../InfiniteScroll/InfiniteScrollPosts.jsx'
 import PopularChannels from './PopularChannels.jsx'
 import styles from './styles/HomeGuest.module.css'
-import { getAdditionalPostData, getPopularPosts } from '../../../services/postService.js'
+import { getPopularPosts } from '../../../services/postService.js'
 import CreatePostBar from '../../Post/CreatePostBar.jsx'
 
 const HomeGuest = () => {
@@ -16,7 +16,6 @@ const HomeGuest = () => {
         <CreatePostBar />
           <InfiniteScrollPosts
             fetchFunction={getPopularPosts}
-            fetchAdditionalFunction={getAdditionalPostData}
             limit={5}
             Fallback={() => <div className={styles['fallback']}>NO POSTS</div>}
           />
@@ -30,7 +29,6 @@ const HomeGuest = () => {
           <PopularChannels />
           <InfiniteScrollPosts
             fetchFunction={getPopularPosts}
-            fetchAdditionalFunction={getAdditionalPostData}
             limit={3}
             Fallback={() => <div className={styles['fallback']}>NO POSTS</div>}
           />

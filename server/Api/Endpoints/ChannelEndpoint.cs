@@ -173,6 +173,7 @@ public class ChannelEndpoints(WebApplication app) : EndpointMapper(app)
     }
     private void MapPostEndpoints()
     {
+        // OPTIMIZED: Returns posts with all related data
         _app.MapGet("channels/{channelId:guid}/posts",
         async 
         ([FromServices] PostService postService,
@@ -181,8 +182,8 @@ public class ChannelEndpoints(WebApplication app) : EndpointMapper(app)
          [FromQuery] int? offset
         ) =>
         {
-            List<Post> postList = await postService.GetPostsFromChannel(channelId, limit, offset);
-            return Results.Ok(new {postList});
+            var postList = await postService.GetPostsFromChannelDetailed(channelId, limit, offset);
+            return Results.Ok(new { postList });
         }).AllowAnonymous();
     }
 }

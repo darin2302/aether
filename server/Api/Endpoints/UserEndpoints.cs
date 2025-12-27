@@ -15,6 +15,7 @@ public class UserEndpoints(WebApplication app) : EndpointMapper(app)
             [FromRoute] Guid id
         ) => Results.Ok(new { channelList = await cmService.GetRelatedChannels(id) }));
 
+        // OPTIMIZED: Returns posts with all related data
         _app.MapGet("/users/{id:guid}/related/posts", 
         async 
         (
@@ -22,7 +23,7 @@ public class UserEndpoints(WebApplication app) : EndpointMapper(app)
             [FromQuery] int? limit,
             [FromQuery] int? offset,
             [FromRoute] Guid id
-        ) => Results.Ok(new { postList = await postService.GetRelatedPosts(id, limit, offset) }));
+        ) => Results.Ok(new { postList = await postService.GetRelatedPostsDetailed(id, limit, offset) }));
 
         _app.MapGet("/users/{id:guid}/username", 
         async
@@ -40,6 +41,7 @@ public class UserEndpoints(WebApplication app) : EndpointMapper(app)
         ) => Results.Ok(await userService.GetByUsername(username))
         ).AllowAnonymous();
 
+        // OPTIMIZED: Returns posts with all related data
         _app.MapGet("/users/{id:guid}/posts",
         async
         (
@@ -47,7 +49,7 @@ public class UserEndpoints(WebApplication app) : EndpointMapper(app)
             [FromRoute] Guid id 
         ) => 
         {
-            return Results.Ok(new {postList = await postService.GetPostsFromUser(id)});
+            return Results.Ok(new { postList = await postService.GetPostsFromUserDetailed(id) });
         }).AllowAnonymous();
     }
 }

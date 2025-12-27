@@ -140,6 +140,103 @@ public class PostService(IConfiguration config) : DbService(config)
             AND ownerid = '{ownerId}'::uuid
        ");
     }
+    // ============================================
+    // OPTIMIZED METHODS - Return PostDetailDto with all related data
+    // ============================================
+
+    private const string PostDetailQuery = @"
+        SELECT 
+            p.id, p.ownerid, p.channelid, p.title, p.text, 
+            p.linkurl, p.imgurl, p.ispopular, p.dateofcreation,
+            u.username as ownerusername,
+            c.name as channelname,
+            (SELECT COUNT(*) FROM likes l WHERE l.postid = p.id) as likescount,
+            (SELECT COUNT(*) FROM dislikes d WHERE d.postid = p.id) as dislikescount,
+            (SELECT COUNT(*) FROM comments cm WHERE cm.postid = p.id) as commentcount
+        FROM posts p
+        JOIN users u ON p.ownerid = u.id
+        JOIN channels c ON p.channelid = c.id";
+
+    public async Task<PostDetailDto> GetOneDetailed(Guid id)
+    {
+        QueryResult<PostDetailDto> result = await ExecuteQueryCommandAsync(
+            $"{PostDetailQuery} WHERE p.id = '{id}'::uuid",
+            MapPostDetailFromReader);
+
+        if (!result.HasRecord)
+            throw new NotFoundException("Post not found.");
+
+        return result.Record;
+    }
+
+    public async Task<List<PostDetailDto>> GetPopularPostsDetailed(int? limit = null, int? offset = null)
+    {
+        return await ExecuteQueryListCommandAsync(
+            $@"{PostDetailQuery}
+               WHERE p.ispopular = true
+               ORDER BY p.dateofcreation DESC
+               LIMIT {(limit is null ? "ALL" : limit)}
+               OFFSET {offset ?? 0}",
+            MapPostDetailFromReader);
+    }
+
+    public async Task<List<PostDetailDto>> GetPostsFromChannelDetailed(Guid channelId, int? limit = null, int? offset = null)
+    {
+        return await ExecuteQueryListCommandAsync(
+            $@"{PostDetailQuery}
+               WHERE p.channelid = '{channelId}'::uuid
+               ORDER BY p.dateofcreation DESC
+               LIMIT {(limit is null ? "ALL" : limit)}
+               OFFSET {offset ?? 0}",
+            MapPostDetailFromReader);
+    }
+
+    public async Task<List<PostDetailDto>> GetRelatedPostsDetailed(Guid userId, int? limit, int? offset)
+    {
+        return await ExecuteQueryListCommandAsync(
+            $@"{PostDetailQuery}
+               JOIN channelmembers cm ON p.channelid = cm.channelid
+               WHERE cm.userid = '{userId}'::uuid
+               ORDER BY p.dateofcreation DESC
+               LIMIT {(limit is null ? "ALL" : limit)}
+               OFFSET {offset ?? 0}",
+            MapPostDetailFromReader);
+    }
+
+    public async Task<List<PostDetailDto>> GetPostsFromUserDetailed(Guid userId)
+    {
+        return await ExecuteQueryListCommandAsync(
+            $@"{PostDetailQuery}
+               WHERE p.ownerid = '{userId}'::uuid
+               ORDER BY p.dateofcreation DESC",
+            MapPostDetailFromReader);
+    }
+
+    private PostDetailDto MapPostDetailFromReader(NpgsqlDataReader reader)
+    {
+        return new PostDetailDto
+        {
+            Id = reader.GetGuid(0),
+            OwnerId = reader.GetGuid(1),
+            ChannelId = reader.GetGuid(2),
+            Title = reader.GetString(3),
+            Text = reader.IsDBNull(4) ? "" : reader.GetString(4),
+            LinkUrl = reader.IsDBNull(5) ? "" : reader.GetString(5),
+            ImgUrl = reader.IsDBNull(6) ? "" : reader.GetString(6),
+            IsPopular = reader.GetBoolean(7),
+            DateOfCreation = reader.GetDateTime(8),
+            OwnerUsername = reader.GetString(9),
+            ChannelName = reader.GetString(10),
+            LikesCount = reader.GetInt32(11),
+            DislikesCount = reader.GetInt32(12),
+            CommentCount = reader.GetInt32(13)
+        };
+    }
+
+    // ============================================
+    // LEGACY METHODS - Keep for backwards compatibility
+    // ============================================
+
     private Post MapPostFromReader(NpgsqlDataReader reader)
     {
         return new Post 

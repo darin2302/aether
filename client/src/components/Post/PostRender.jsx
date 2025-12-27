@@ -8,7 +8,7 @@ import {getTimeDifference} from '../../utils/dateUtils.js'
 
 import { useContext, useState } from 'react'
 
-import { redirect, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import UserDataContext from '../../contexts/UserDataContext'
 
@@ -16,22 +16,20 @@ import UilComment from '@iconscout/react-unicons/icons/uil-comment.js'
 
 import styles from './styles/PostRender.module.css'
 
+// OPTIMIZED: postData now contains all data including ownerUsername, channelName, and counts
 const PostRender = ({
   postData, 
-  additionalPostData,
   isCompact, 
   isRedirect
 }) => {
 
-  const [postDataState,setPostDataState] = useState(postData)
-  const [additionalPostDataState, setAdditionalPostDataState] = useState(additionalPostData);
-  //In case the post data changes
+  const [postDataState, setPostDataState] = useState(postData)
   const { userData } = useContext(UserDataContext)
   const navigate = useNavigate()
 
   const redirectToPage = (e) =>{ 
     e.stopPropagation()
-    navigate(`/c/${additionalPostData.channelName}/${postData.id}`)
+    navigate(`/c/${postData.channelName}/${postData.id}`)
   }
 
   return(
@@ -41,7 +39,7 @@ const PostRender = ({
       onClick={e => redirectToPage(e)}
     >
       <PostRating 
-        postData={{...additionalPostDataState, id: postDataState.id}} 
+        postData={postDataState} 
       />
 
       <div 
@@ -56,18 +54,18 @@ const PostRender = ({
             className={styles['channel-name']} 
             onClick={(e) => {
             e.stopPropagation();
-            navigate(`/c/${additionalPostData.channelName}`)
+            navigate(`/c/${postData.channelName}`)
             }}
-          >c/{additionalPostData.channelName} </span> 
+          >c/{postData.channelName} </span> 
 
           <span> Posted by </span> 
 
           <span className={styles['username']} 
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`/u/${additionalPostData.ownerUsername}`)
+              navigate(`/u/${postData.ownerUsername}`)
             }}
-          >u\{additionalPostData.ownerUsername}</span> 
+          >u\{postData.ownerUsername}</span> 
 
           <span> {getTimeDifference(postData.dateOfCreation)} ago</span>
         </div>
@@ -94,10 +92,10 @@ const PostRender = ({
                 ${isRedirect ? styles['redirect'] : ''}`
             }>
               <UilComment size={25}/> 
-              <span>{additionalPostData.commentCount} Comments</span>
+              <span>{postData.commentCount} Comments</span>
             </button>
 
-          <PostSharing postId={postData.id} channelName={additionalPostData.channelName}/>
+          <PostSharing postId={postData.id} channelName={postData.channelName}/>
 
           {userData && 
             <PostSaving postData={postData}/>
@@ -107,8 +105,5 @@ const PostRender = ({
     </div>
   )
 }
-        // 
-        // {postData.linkUrl && 
-        //   <LinkPreview url={postData.linkUrl} isCompact={isCompact}/>
-        // }
+
 export default PostRender

@@ -4,7 +4,6 @@ import InfiniteScrollPosts from '../../InfiniteScroll/InfiniteScrollPosts'
 import CreatePostBar from '../../Post/CreatePostBar'
 import styles from './styles/HomeFeed.module.css'
 import UserDataContext from '../../../contexts/UserDataContext'
-import { getAdditionalPostData } from '../../../services/postService'
 import welcome from "/images/welcome.png";
 
 const HomeFeed = () => {
@@ -14,7 +13,6 @@ const HomeFeed = () => {
       <CreatePostBar />
       <InfiniteScrollPosts 
         fetchFunction={(limit, offset) => getRelatedPosts(userData, limit, offset)} 
-        fetchAdditionalFunction={getAdditionalPostData}
         limit={3}
         Fallback={() => <div className={styles['welcome-div']}><img src={welcome}></img></div>}
       />

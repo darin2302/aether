@@ -24,14 +24,16 @@ public class PostEndpoints(WebApplication app) : EndpointMapper(app)
         ) => Results.Ok(new { postData = await postService.Create(newPost) })
         );
 
+        // OPTIMIZED: Returns post with all related data in one request
         _app.MapGet("/posts/{postId:guid}",
         async
         (
             [FromServices] PostService postService,
             [FromRoute] Guid postId
-        ) => Results.Ok(new { postData = await postService.GetOne(postId) })
+        ) => Results.Ok(new { postData = await postService.GetOneDetailed(postId) })
         ).AllowAnonymous();
 
+        // OPTIMIZED: Returns posts with all related data in one request
         _app.MapGet("/posts/popular",
         async 
         (
@@ -40,8 +42,8 @@ public class PostEndpoints(WebApplication app) : EndpointMapper(app)
             [FromQuery] int? offset
         ) => 
         {
-            List<Post> popularPostList = await postService.GetPopularPosts(limit, offset);
-            return Results.Ok(new {postList = popularPostList});
+            var postList = await postService.GetPopularPostsDetailed(limit, offset);
+            return Results.Ok(new { postList });
         }).AllowAnonymous();
     }
 

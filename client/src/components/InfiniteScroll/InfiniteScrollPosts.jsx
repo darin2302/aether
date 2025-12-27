@@ -8,7 +8,8 @@ import styles from './InfiniteScrollPosts.module.css'
 import { useNavigate } from 'react-router-dom'
 
 
-const InfiniteScrollPosts = ({ fetchFunction, fetchAdditionalFunction, limit, Fallback }) => {
+// OPTIMIZED: No longer needs fetchAdditionalFunction - all data comes with posts
+const InfiniteScrollPosts = ({ fetchFunction, limit, Fallback }) => {
   const [postDataList, setPostDataList] = useState([])
   const [offset, setOffset] = useState(0);
   const [endOfPosts, setEndOfPosts] = useState(false);
@@ -29,26 +30,18 @@ const InfiniteScrollPosts = ({ fetchFunction, fetchAdditionalFunction, limit, Fa
       let response = await fetchFunction(limit, offset);
       const deserialized = await response.json();
       const dataList = deserialized.postList;
-      if (dataList.length < offset) {
+      
+      if (dataList.length < limit) {
         setEndOfPosts(true);
       }
-      const resultList = [];
-      for (let i = 0; i < dataList.length; i++) {
-        const additionalData = await fetchAdditionalFunction(dataList[i])
-        if (!additionalData)
-          throw ("INTERNAL ERROR");
-
-        resultList.push(
-          {
-            postData: dataList[i],
-            additionalData
-          }
-        )
-      }
-      setPostDataList(curr => [...curr, ...resultList]);
+      
+      // OPTIMIZED: Posts now include all related data (ownerUsername, channelName, counts)
+      // No need for additional fetch calls
+      setPostDataList(curr => [...curr, ...dataList]);
       setOffset(o => o + limit);
     }
     catch (e) {
+      console.error(e);
       navigate("/error");
     }
   }
@@ -73,11 +66,10 @@ const InfiniteScrollPosts = ({ fetchFunction, fetchAdditionalFunction, limit, Fa
             <div className={styles['container']}>
               <ul className={styles['post-container']}>
                 {
-                  postDataList.map(postDataContainer =>
-                    <li key={postDataContainer.postData.id}>
+                  postDataList.map(post =>
+                    <li key={post.id}>
                       <PostRender
-                        postData={postDataContainer.postData}
-                        additionalPostData={postDataContainer.additionalData}
+                        postData={post}
                         isCompact={true}
                       />
                     </li>)}
@@ -96,11 +88,10 @@ const InfiniteScrollPosts = ({ fetchFunction, fetchAdditionalFunction, limit, Fa
         <div className={styles['container']}>
           <ul className={styles['post-container']}>
             {
-              postDataList.map(postDataContainer =>
-                <li key={postDataContainer.postData.id}>
+              postDataList.map(post =>
+                <li key={post.id}>
                   <PostRender
-                    postData={postDataContainer.postData}
-                    additionalPostData={postDataContainer.additionalData}
+                    postData={post}
                     isCompact={true}
                   />
                 </li>)}
