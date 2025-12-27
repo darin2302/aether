@@ -8,7 +8,7 @@ const PostSharing = ({postId, channelName}) => {
   const shareHandler = (e) => {
     e.stopPropagation()
     navigator.clipboard.writeText(
-      `http://azure-client.azurewebsites.net/c/${channelName}/${postId}/`)
+      `${window.location.origin}/c/${channelName}/${postId}/`)
     setCopied(true)
   }
 

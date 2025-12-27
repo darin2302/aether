@@ -334,8 +334,13 @@ In every Component folder, there's a styles folder, containing the respective CS
 ### Deployment - Frontend
 🚀
 
-  Client-side code is deployed on Vercel, utilizing the `client-production` branch for production deployments.  
+  Client-side code is deployed on **Vercel**.  
   A live version is available at [aether-zeta.vercel.app](https://aether-zeta.vercel.app)
+
+  #### Environment Variables (Vercel)
+  | Variable | Description |
+  |----------|-------------|
+  | `VITE_API_URL` | Backend API URL (e.g., `https://your-app.up.railway.app`) |
   
 ------
 
@@ -377,9 +382,8 @@ The backend of Aether is a REST API, built with the following technologies:
 ⚙️
  ##### Configuration Sources
 
-   - Azure Environment Variables: Connection String, Token Signing Credentials.
-
-   - appsettings.json: Default application settings.
+   - Environment Variables (Railway): Connection String, JWT Signing Credentials.
+   - appsettings.json: Default application settings (local development).
  ##### Implementation
  ```csharp
  IConfiguration config =  new ConfigurationBuilder()
@@ -424,7 +428,7 @@ More information about the API's endpoints can be found in
 
 ### Auth
 🔒
- Aether uses JWT for it's authentication. JWT signing credentials are passed down from azure environment variables.
+ Aether uses JWT for authentication. JWT signing credentials are passed via environment variables (Railway in production).
  Endpoints are authenticated by default, and those which aren't use `.AllowAnonymous()` method at the end of declaration.
  
  Authentication is handled with the help of the following classes:
@@ -487,7 +491,19 @@ Catch clauses
 ### Deployment - Backend
 🚀
 
- Aether Web Api, as well as the PostgreSQL database for the project,  
- are deployed on Azure using the Free Tier for both App Services and Postgre Flexible Server.
+ Aether Web API and PostgreSQL database are deployed using:
  
+ | Service | Platform | Tier |
+ |---------|----------|------|
+ | **API** | [Railway](https://railway.app) | Free ($5 credit/month) |
+ | **Database** | [Neon](https://neon.tech) PostgreSQL | Free (0.5GB) |
+
+ #### Environment Variables (Railway)
+ | Variable | Description |
+ |----------|-------------|
+ | `ConnectionStrings__aether` | PostgreSQL connection string (ADO.NET format) |
+ | `JwtSettings__ValidIssuer` | JWT issuer name |
+ | `JwtSettings__SigningKey` | JWT signing key (min 32 chars) |
+ | `JwtSettings__ValidAudiences__0` | Allowed frontend URL |
+
 -----
