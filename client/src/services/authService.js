@@ -4,6 +4,7 @@ import * as request from './request.js'
 const baseUrl = `${API_URL}/auth`
 
 export const signUp = async (bodyData) => {
+
     try{
         const response = await fetch(`${baseUrl}/signup`, {
             method: 'POST',
