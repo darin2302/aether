@@ -1,31 +1,63 @@
-
-.rating{
-  display:flex;
-  padding:.3em 1em;
-  background:#edf0ef; 
-  flex-direction:column;
-  align-items:center;
-  justify-content:start;
-  border-right:.3px solid var(--border-grey);
-  border-radius: 7px 0 0 7px;
+.rating {
+  display: flex;
+  padding: 0.5em 0.8em;
+  background: #f8f9fa;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  border-right: 1px solid #e9ecef;
+  border-radius: 8px 0 0 8px;
+  gap: 4px;
+  min-width: 50px;
 }
 
-.rating>:first-child:hover,.rating>:last-child:hover{
-  background:#bfbfbf;
-  border-radius:5px;
-    cursor: pointer;
+.rating > :first-child,
+.rating > :last-child {
+  padding: 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rating > :first-child:hover,
+.rating > :last-child:hover {
+  background: #e9ecef;
+  transform: scale(1.1);
+}
+
+.rating > :first-child:active,
+.rating > :last-child:active {
+  transform: scale(0.95);
 }
 
 .likes-count.liked,
-.rating>:first-child.liked{
+.rating > :first-child.liked {
   color: var(--accent-blue);
 }
 
 .likes-count.disliked,
-.rating>:last-child.disliked{
+.rating > :last-child.disliked {
   color: var(--accent-red);
 }
 
-.likes-count{
+.likes-count {
   font-weight: var(--fw-b);
+  font-size: var(--fs-reg);
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: color 0.2s ease;
+}
+
+.likes-count.liked {
+  color: var(--accent-blue);
+}
+
+.likes-count.disliked {
+  color: var(--accent-red);
 }

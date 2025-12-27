@@ -1,28 +1,85 @@
-.no-results{
-    color: black;
-    width: 100%;
-    background: linear-gradient(to bottom, white 90%, var(--background-grey));
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: start;
+.no-results {
+  color: #333;
+  width: 100%;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  min-height: 400px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
 }
-.no-results>img{
-    width: 40%;
+
+.no-results > img {
+  width: 200px;
+  max-width: 40%;
+  margin-bottom: 2rem;
+  opacity: 0.6;
 }
-.spelling{
-    color: blueviolet;
+
+.spelling {
+  color: #666;
+  font-weight: var(--fw-r);
+  margin-top: 0.5rem;
 }
-.no-results>h1{
-    margin-bottom: 10px;
-    font-size: var(--fs-xl)
+
+.no-results > h1 {
+  margin-bottom: 0.5rem;
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-b);
+  color: #1a1a1a;
 }
-.results{
-    background: linear-gradient(to top, var(--background-grey) 10%, white);
-    font-weight: bold;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 20px;
-    width: 100%;
+
+.no-results > h6 {
+  font-size: var(--fs-reg);
+  color: var(--text-grey);
+}
+
+.results {
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
+.results > h1 {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-b);
+  color: #1a1a1a;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.results > li {
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  border: 1px solid transparent;
+  margin-bottom: 0.5rem;
+}
+
+.results > li:hover {
+  background-color: #f8f9fa;
+  transform: translateX(4px);
+  border-color: #e0e0e0;
+}
+
+.results > li:active {
+  transform: translateX(2px);
+}
+
+.results > li > div > h1 {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-b);
+  color: var(--accent-blue);
+  margin: 0;
 }

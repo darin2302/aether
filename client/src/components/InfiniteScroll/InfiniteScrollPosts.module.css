@@ -1,24 +1,42 @@
-.post-container,.container{
-  display:flex;
-  flex-direction:column;
-  gap:1em;
-  align-items: center;
+.post-container,
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  align-items: stretch;
+  width: 100%;
 }
-@media(min-width: 800px) {
+
+@media (min-width: 800px) {
   .container {
-    max-width: 80vw;
+    max-width: 100%;
     padding-bottom: 20px;
   }
 }
-.post-container,.post-container>li{
-    width:100%;
+
+.post-container,
+.post-container > li {
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
-.non-initialized{
-  width: 80vw;
+
+.non-initialized {
+  width: 100%;
   display: block;
   height: 100vh;
 }
-.post-container>span{
+
+.post-container > span {
   height: 100%;
+}
+
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  width: 100%;
 }
 

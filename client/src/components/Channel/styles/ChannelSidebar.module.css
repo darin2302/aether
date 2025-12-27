@@ -1,21 +1,30 @@
-.side>h6{
-  padding:1.3em;
-  font-weight: var(--fw-b);
-  font-size: calc(var(--fs-reg) - 2px);
-  color:white;
-  background: radial-gradient(circle at 12.3% 19.3%, rgb(85, 88, 218) 0%, rgb(95, 209, 249) 100.2%);
-  border-radius: 8px 8px 0 0;
-}
-
-.side>*{
-  padding:1em;
-}
-
-.side{
-  display:flex;
+.side {
+  display: flex;
   flex-direction: column;
-  height:fit-content;
+  height: fit-content;
   background-color: white;
-  border-radius:8px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.side > h6 {
+  padding: 1.2em 1.5em;
+  font-weight: var(--fw-b);
+  font-size: calc(var(--fs-reg) - 1px);
+  color: white;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px 8px 0 0;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.side > *:not(h6) {
+  padding: 1em 1.5em;
+}
+
+.side > *:last-child {
+  border-radius: 0 0 8px 8px;
 }
 

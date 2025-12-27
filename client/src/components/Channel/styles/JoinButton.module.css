@@ -1,17 +1,31 @@
-
-.join-btn{
-  width:fit-content;
+.join-btn {
+  width: fit-content;
   margin: 0 0 20px 1.5rem;
-  padding: 5px 30px;
-  font-size: calc(var(--fs-reg) - .1em);
+  padding: 0.6em 1.8em;
+  font-size: calc(var(--fs-reg) - 0.1em);
   font-weight: var(--fw-b);
-  color:white;
-  background-color:black;
-  border-radius:15px;
+  color: white;
+  background-color: #1a1a1a;
+  border: none;
+  border-radius: 20px;
   cursor: pointer;
   place-self: center;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.join-btn:hover{
-  background-color:var(--overlay-color);
+.join-btn:hover {
+  background-color: #333;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.join-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.join-btn:focus {
+  outline: 2px solid #1a1a1a;
+  outline-offset: 2px;
 }
