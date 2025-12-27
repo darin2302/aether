@@ -12,13 +12,23 @@ const PopularChannels = () => {
   const navigate = useNavigate();
 
   async function fetching() {
-    const response = await getPopularChannels();
+    try {
+      const response = await getPopularChannels();
 
-    if (!response.ok)
+      if (!response.ok) {
+        console.error('Failed to fetch popular channels:', response.status);
+        navigate("/error");
+        return;
+      }
+
+      const data = await response.json();
+      // Handle both old format (array) and new format (object with channelList)
+      const channels = Array.isArray(data) ? data : (data.channelList || []);
+      setVisibleChannels(channels);
+    } catch (error) {
+      console.error('Error fetching popular channels:', error);
       navigate("/error");
-
-    const data = await response.json();
-    setVisibleChannels(data.channelList || []);
+    }
   }
 
   useEffect(() => {

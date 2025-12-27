@@ -5,10 +5,15 @@ const SearchResults = () => {
   const location = useLocation()
   const navigate = useNavigate();
   let results = location.state
-  return(
-      !results ||
-      results.length == 0 
-      ? 
+  
+  // Ensure results is an array
+  if (!Array.isArray(results)) {
+    results = [];
+  }
+  
+  return (
+    !results || results.length == 0
+      ?
       <div className={styles["no-results"]}>
         <img src='./images/noresults.svg' />
         <h1>Hmm. We couldn't find any results.</h1>
@@ -17,16 +22,16 @@ const SearchResults = () => {
       :
       <ul className={styles['results']}>
         <h1>Results</h1>
-        {results.map((resultData) => 
-          <li 
+        {results.map((resultData) =>
+          <li
             key={resultData.id}
             onClick={() => navigate(`/c/${resultData.name}`)}
           >
-          <div>
-            <h1>c/{resultData.name}</h1>
-          </div>
+            <div>
+              <h1>c/{resultData.name}</h1>
+            </div>
           </li>
-          )
+        )
         }
       </ul>
   )
