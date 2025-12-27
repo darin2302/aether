@@ -58,13 +58,8 @@ public class ServiceRegistry(WebApplicationBuilder builder, IConfiguration Confi
                     ValidateIssuerSigningKey = true
                 };
             });
-        Builder.Services.AddAuthorization(options => 
-        {
-            options.FallbackPolicy = new AuthorizationPolicyBuilder()
-            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-            .RequireAuthenticatedUser()
-            .RequireClaim("userId")
-            .Build();
-        });
+        // Authorization is handled by custom AuthMiddleware
+        // No FallbackPolicy needed - it was blocking CORS preflight
+        Builder.Services.AddAuthorization();
     }
 }
