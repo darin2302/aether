@@ -1,5 +1,7 @@
-const baseUrl = "https://aether-d.azurewebsites.net/auth"
+import { API_URL } from './config.js'
 import * as request from './request.js'
+
+const baseUrl = `${API_URL}/auth`
 
 export const signUp = async (bodyData) => {
     try{

@@ -1,8 +1,9 @@
-const baseUrl = 'https://aether-d.azurewebsites.net/replies'
-const commentUrl = "https://aether-d.azurewebsites.net/comments";
-
+import { API_URL } from './config.js'
 import * as request from './request.js'
 import { getUsername } from './userService.js';
+
+const baseUrl = `${API_URL}/replies`
+const commentUrl = `${API_URL}/comments`
 
 export const createReply = async (userData,{parentCommentId,replyToComment,text}) => {
   const bodyData = {

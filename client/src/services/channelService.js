@@ -1,6 +1,7 @@
-
-const baseUrl = 'https://aether-d.azurewebsites.net/channels'
+import { API_URL } from './config.js'
 import * as request from './request.js'
+
+const baseUrl = `${API_URL}/channels`
 
 export const createChannel = async (userData,{name,description}) => {
   const bodyData = {

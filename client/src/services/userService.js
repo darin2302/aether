@@ -1,5 +1,7 @@
-const baseUrl = "https://aether-d.azurewebsites.net/users"
+import { API_URL } from './config.js'
 import * as request from "./request";
+
+const baseUrl = `${API_URL}/users`
 
 export async function getRelatedChannels(userData)
 {

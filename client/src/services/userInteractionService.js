@@ -1,7 +1,9 @@
-const likeUrl = "https://aether-d.azurewebsites.net/likes"
-const dislikeUrl = "https://aether-d.azurewebsites.net/dislikes"
-const saveUrl = "https://aether-d.azurewebsites.net/saves"
+import { API_URL } from './config.js'
 import * as request from "./request"
+
+const likeUrl = `${API_URL}/likes`
+const dislikeUrl = `${API_URL}/dislikes`
+const saveUrl = `${API_URL}/saves`
 
 export async function likePost(userData, postId)
 {

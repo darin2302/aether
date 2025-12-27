@@ -1,8 +1,9 @@
-const baseUrl = 'https://aether-d.azurewebsites.net/posts'
-
+import { API_URL } from './config.js'
 import { getChannelName } from './channelService.js'
 import * as request from './request.js'
 import { getUsername } from './userService.js'
+
+const baseUrl = `${API_URL}/posts`
 
 export const createPost = async (userData,formData) => {
   const { channelId } = formData

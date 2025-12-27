@@ -1,7 +1,8 @@
-const baseUrl = 'https://aether-d.azurewebsites.net/comments'
-const postUrl = "https://aether-d.azurewebsites.net/posts"
-
+import { API_URL } from './config.js'
 import * as request from './request.js'
+
+const baseUrl = `${API_URL}/comments`
+const postUrl = `${API_URL}/posts`
 
 export const createComment = async (userData,{postId,text}) => {
   const bodyData = {
